@@ -8,6 +8,13 @@ function tratarErro(erro) {
     throw new Error(chalk.red(erro));
 }
 
+function arquivoHandlerAssync(caminhoArquivo) {
+    const encoding = 'utf-8';
+    fs.promises.readFile(caminhoArquivo, encoding)
+        .then((texto) => console.log(chalk.blue(texto)))
+        .catch(tratarErro);
+}
+
 const encoding = 'utf-8';
 function arquivoHandler(caminhoArquivo) {
     fs.readFile(caminhoArquivo, encoding, (erro, texto ) => {
@@ -18,4 +25,4 @@ function arquivoHandler(caminhoArquivo) {
     });
 }
 
-arquivoHandler('./arquivos/');
+arquivoHandlerAssync('./arquivos/texto.md');
