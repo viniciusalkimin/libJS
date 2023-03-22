@@ -8,7 +8,18 @@ function tratarErro(erro) {
     throw new Error(chalk.red(erro));
 }
 
-function arquivoHandlerAssync(caminhoArquivo) {
+async function arquivoHandlerAsync(caminhoArquivo) {
+    try {
+        const encoding = 'utf-8';
+        const texto = await fs.promises.readFile(caminhoArquivo, encoding)
+            .catch(tratarErro);
+        console.log(chalk.yellow(texto));
+    } catch (erro) {
+        tratarErro(erro)
+    }
+}
+
+function arquivoHandlerThen(caminhoArquivo) {
     const encoding = 'utf-8';
     fs.promises.readFile(caminhoArquivo, encoding)
         .then((texto) => console.log(chalk.blue(texto)))
@@ -17,12 +28,12 @@ function arquivoHandlerAssync(caminhoArquivo) {
 
 const encoding = 'utf-8';
 function arquivoHandler(caminhoArquivo) {
-    fs.readFile(caminhoArquivo, encoding, (erro, texto ) => {
-        if(erro) {
+    fs.readFile(caminhoArquivo, encoding, (erro, texto) => {
+        if (erro) {
             tratarErro(erro);
         }
         console.log(chalk.bgGrey(texto));
     });
 }
 
-arquivoHandlerAssync('./arquivos/texto.md');
+arquivoHandlerAsync('./arquivos/texto.m');
