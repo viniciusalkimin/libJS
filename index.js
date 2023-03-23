@@ -8,12 +8,20 @@ function tratarErro(erro) {
     throw new Error(chalk.red(erro));
 }
 
+function extrairLinks(texto) {
+    const regex = /\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)/gm;
+    //let regexx = new RegExp("\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)");
+    const capturas = [...texto.matchAll(regex)];
+    const objetosCapturados = capturas.map(captura => ({[captura[1]] : captura[2]}))
+    return objetosCapturados;
+}
+
 async function arquivoHandlerAsync(caminhoArquivo) {
     try {
         const encoding = 'utf-8';
         const texto = await fs.promises.readFile(caminhoArquivo, encoding)
             .catch(tratarErro);
-        console.log(chalk.yellow(texto));
+        console.log(extrairLinks(texto));
     } catch (erro) {
         tratarErro(erro)
     }
@@ -36,4 +44,4 @@ function arquivoHandler(caminhoArquivo) {
     });
 }
 
-arquivoHandlerAsync('./arquivos/texto.m');
+arquivoHandlerAsync('./arquivos/texto.md');
