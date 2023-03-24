@@ -44,4 +44,4 @@ function arquivoHandler(caminhoArquivo) {
     });
 }
 
-arquivoHandlerAsync('./arquivos/texto.md');
+export default arquivoHandlerAsync;
