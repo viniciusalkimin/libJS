@@ -13,7 +13,7 @@ function extrairLinks(texto) {
     //let regexx = new RegExp("\[([^[\]]*?)\]\((https?:\/\/[^\s?#.].[^\s]*)\)");
     const capturas = [...texto.matchAll(regex)];
     const objetosCapturados = capturas.map(captura => ({[captura[1]] : captura[2]}))
-    return objetosCapturados;
+    return objetosCapturados.length !== 0 ? objetosCapturados : 'Não há links do arquivo';
 }
 
 async function arquivoHandlerAsync(caminhoArquivo) {
@@ -21,7 +21,7 @@ async function arquivoHandlerAsync(caminhoArquivo) {
         const encoding = 'utf-8';
         const texto = await fs.promises.readFile(caminhoArquivo, encoding)
             .catch(tratarErro);
-        console.log(extrairLinks(texto));
+        return extrairLinks(texto);
     } catch (erro) {
         tratarErro(erro)
     }
