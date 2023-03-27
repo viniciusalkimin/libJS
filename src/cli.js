@@ -8,6 +8,14 @@ processaTexto(caminho);
 
 async function processaTexto(argumentos) {
 
+    try {
+        fs.lstatSync(argumentos[2]);
+    } catch(erro) {
+        if(erro.code === 'ENOENT') {
+            console.log('Arquivo ou caminho não existe');
+            return;
+        }
+    }
     if(fs.lstatSync(argumentos[2]).isFile()) {
         const resultado = await arquivoHandlerAsync(argumentos[2]);
         console.log(chalk.greenBright('Lista de links: '), resultado);
@@ -15,9 +23,8 @@ async function processaTexto(argumentos) {
         const arquivos = await fs.promises.readdir(argumentos[2]);
         arquivos.forEach(async (nomeDeArquivo) => {
             const lista = await arquivoHandlerAsync(`${argumentos[2]}/${nomeDeArquivo}`);
-             console.log(lista);
+            console.log(lista);
         }) 
-
     }
 }
 
