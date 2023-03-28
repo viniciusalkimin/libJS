@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import fs from 'fs';
 
-console.log(chalk.blue('olá mundo'));
+//console.log(chalk.blue('olá mundo'));
 
 function tratarErro(erro) {
     console.log(erro);

@@ -1,29 +1,46 @@
 import arquivoHandlerAsync from './index.js';
 import chalk  from 'chalk';
 import fs from 'fs';
+import listaValidada from './http-validacao.js';
 
-const caminho = process.argv;
+const argumentos = process.argv;
 
-processaTexto(caminho);
+processaTexto(argumentos);
+
+async function imprimeLista(valida, resultado, indentificador = '') {
+
+    if(valida) {
+        console.log(chalk.yellow('Lista validada: '),
+        chalk.black.bgGreen(indentificador),
+        await listaValidada(resultado));
+    } else {
+        console.log(chalk.yellow('Lista de links: '),
+        chalk.black.bgGreen(indentificador),
+        resultado);
+    }
+}
 
 async function processaTexto(argumentos) {
 
+    const caminho = argumentos[2];
+    const valida = argumentos[3] === '--valida';
+
     try {
-        fs.lstatSync(argumentos[2]);
+        fs.lstatSync(caminho);
     } catch(erro) {
         if(erro.code === 'ENOENT') {
             console.log('Arquivo ou caminho não existe');
             return;
         }
     }
-    if(fs.lstatSync(argumentos[2]).isFile()) {
+    if(fs.lstatSync(caminho).isFile()) {
         const resultado = await arquivoHandlerAsync(argumentos[2]);
-        console.log(chalk.greenBright('Lista de links: '), resultado);
-    } else if (fs.lstatSync(argumentos[2]).isDirectory()) {
-        const arquivos = await fs.promises.readdir(argumentos[2]);
+        await imprimeLista(valida, resultado);
+    } else if (fs.lstatSync(caminho).isDirectory()) {
+        const arquivos = await fs.promises.readdir(caminho);
         arquivos.forEach(async (nomeDeArquivo) => {
-            const lista = await arquivoHandlerAsync(`${argumentos[2]}/${nomeDeArquivo}`);
-            console.log(lista);
+            const lista = await arquivoHandlerAsync(`${caminho}/${nomeDeArquivo}`);
+            await imprimeLista(valida, lista, nomeDeArquivo);
         }) 
     }
 }
